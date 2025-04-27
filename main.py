@@ -67,12 +67,52 @@ def main(page: ft.Page):
                 )
         )
     )
+    def validar_email(e):
+        # Importa regex para validar o formato do email
+        import re
+        # Expressão regular simples para validar e-mails
+        padrao_email = r"[^@]+@[^@]+\.[^@]+"
+        # Se o e-mail NÃO for válido, mostramos uma mensagem de erro
+        if not re.match(padrao_email, email_field.value):
+            email_field.error_text = "Por favor, insira um e-mail válido."
+        else:
+            email_field.error_text = None  # Nenhum erro se for válido
+        page.update()  # Atualiza a tela para mostrar mudanças
 
+    def validar_senha(e):
+        # Importa regex para validar a senha
+        import re
+        # Se os campos não forem iguais, mostramos uma mensagem de erro
+        if not re.match(senha.value, confirmar_senha.value):
+            confirmar_senha.error_text = "Valor precisa ser igual a senha."
+        else:
+            confirmar_senha.error_text = None  # Nenhum erro se for válido
+        page.update()  # Atualiza a tela para mostrar mudanças
 
     # ========== COMPONENTES DA INTERFACE ========== #
     # Ícone do aplicativo
     app_icon = ft.Icon(name=ft.icons.ACCOUNT_CIRCLE, size=100)
+
+    email_field = ft.TextField(
+        label="E-mail",               # Rótulo do campo
+        width=300,                    # Largura em pixels
+        keyboard_type=ft.KeyboardType.EMAIL,  # Mostra teclado de e-mail no celular
+        on_blur=validar_email          # Quando o campo perde o foco, chama a validação
+    )
+
+    senha = ft.TextField(
+        label="Senha", 
+        password=True, 
+        width=300
+    )
     
+    confirmar_senha = ft.TextField(
+        label="Confirmar Senha", 
+        password=True, 
+        width=300, 
+        on_blur=validar_senha
+    )
+
     # Campo de usuário
     username = ft.TextField(
         label="Nome de usuário",
@@ -117,13 +157,13 @@ def main(page: ft.Page):
             [
                 ft.Text("Criar Nova Conta", size=20, weight=ft.FontWeight.BOLD),
                 ft.TextField(label="Nome Completo", width=300),
-                ft.TextField(label="E-mail", width=300),
+                email_field,
                 ft.Row([date_display], alignment=ft.MainAxisAlignment.CENTER),
                 ft.TextField(label="Nome de Usuário", width=300),
-                ft.TextField(label="Senha", password=True, width=300),
-                ft.TextField(label="Confirmar Senha", password=True, width=300),
+                senha,
+                confirmar_senha,
                 ft.ElevatedButton("Cadastrar", on_click=register_user),
-                ft.TextButton("Voltar para Login", on_click=lambda e: show_login_view())
+                ft.TextButton("Voltar", on_click=lambda e: show_login_view())
             ],
             spacing=10,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
